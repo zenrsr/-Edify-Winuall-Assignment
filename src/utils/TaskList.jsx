@@ -42,7 +42,7 @@ const Todo = ({
   });
 
   return (
-    <div className="flex flex-row relative justify-between gap-4 max-w-full items-center text-white bg-white bg-opacity-15 backdrop-blur-xl shadow-xl border-[2px] border-slate-500 rounded-2xl px-6 py-5 max-sm:py-4 max-sm:px-4">
+    <div className="flex flex-row relative justify-between gap-4 max-w-full items-center text-white bg-white bg-opacity-15 backdrop-blur-xl shadow-xl border-[2px] my-5 border-slate-500 rounded-2xl px-6 py-5 max-sm:py-4 max-sm:px-4">
       {val.check && (
         <div
           className=" bg-green-500 bg-opacity-70  border-[2px] border-slate-500 p-4 max-sm:p-2 rounded-full cursor-pointer"

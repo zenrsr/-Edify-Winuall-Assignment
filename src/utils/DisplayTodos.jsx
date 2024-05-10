@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+/* eslint-disable react/prop-types */
+import { useEffect, useRef, useState } from "react";
 import { IoMdSearch } from "react-icons/io";
 import Todo from "./TaskList";
 import { CircularProgressbar } from "react-circular-progressbar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import "react-circular-progressbar/dist/styles.css";
 
 const DisplayTodos = ({
@@ -14,6 +16,7 @@ const DisplayTodos = ({
 }) => {
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [activeTab, setActiveTab] = useState("all");
 
   const progressBarRef = useRef(null);
 
@@ -33,13 +36,20 @@ const DisplayTodos = ({
   };
 
   useEffect(() => {
-    const filterResults = data.filter(
+    let filteredData = data;
+    if (activeTab === "completed") {
+      filteredData = data.filter((val) => val.check);
+    } else if (activeTab === "pending") {
+      filteredData = data.filter((val) => !val.check);
+    }
+
+    const filterResults = filteredData.filter(
       (val) =>
         val.title.toLowerCase().includes(search.toLowerCase()) ||
         val.description.toLowerCase().includes(search.toLowerCase())
     );
     setSearchResults(filterResults);
-  }, [data, search]);
+  }, [data, search, activeTab]);
 
   useEffect(() => {
     const progressBar = progressBarRef.current;
@@ -50,12 +60,28 @@ const DisplayTodos = ({
         } else {
           clearInterval(intervalId);
         }
-      }, 50); // Update every 50ms
+      }, 50);
 
-      return () => clearInterval(intervalId); // Cleanup the interval
+      return () => clearInterval(intervalId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [completedTask()]);
+
+  const completedTasks = () => {
+    const completed = data.filter((val) => val.check);
+    if (completed.length > 0) {
+      return `(${completed.length})`;
+    }
+    return "";
+  };
+
+  const pendingTask = () => {
+    const pending = data.filter((val) => !val.check);
+    if (pending.length > 0) {
+      return `(${pending.length})`;
+    }
+    return "";
+  };
 
   return (
     <>
@@ -109,20 +135,90 @@ const DisplayTodos = ({
             </div>
           </div>
 
-          <div className="max-md:container max-w-[700px] m-auto flex flex-col gap-4 max-sm:gap-3 pb-5">
-            {searchResults.map((val, index) => (
-              <Todo
-                key={index}
-                i={index}
-                val={val}
-                data={data}
-                setData={setData}
-                setEdit={setEdit}
-                setDeleteNotificationTitle={setDeleteNotificationTitle}
-                setDeleteNotification={setDeleteNotification}
-                setTaskDetails={setTaskDetails}
-              />
-            ))}
+          <div className="flex flex-col items-center justify-center max-w-[700px] mx-auto mt-10 mb-10">
+            <Tabs
+              defaultValue="all"
+              className="w-full flex justify-evenly flex-col"
+            >
+              <div className="flex w-full justify-center">
+                <TabsList className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-xl shadow-lg rounded-xl text-white border-[2px] border-slate-500 flex max-w-full sm:max-w-3/4">
+                  <TabsTrigger
+                    value="all"
+                    className="px-2 py-1 sm:px-4 sm:py-2"
+                  >
+                    All Tasks {data.length > 0 ? `(${data.length})` : ""}
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="completed"
+                    className="px-2 py-1 sm:px-4 sm:py-2"
+                  >
+                    Completed Tasks {completedTasks()}
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="pending"
+                    className="px-2 py-1 sm:px-4 sm:py-2"
+                  >
+                    Pending Tasks {pendingTask()}
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              <TabsContent value="all" className="text-white max-w-full mt-4">
+                {searchResults.map((val, index) => (
+                  <Todo
+                    key={index}
+                    i={index}
+                    val={val}
+                    data={data}
+                    setData={setData}
+                    setEdit={setEdit}
+                    setDeleteNotificationTitle={setDeleteNotificationTitle}
+                    setDeleteNotification={setDeleteNotification}
+                    setTaskDetails={setTaskDetails}
+                  />
+                ))}
+              </TabsContent>
+              <TabsContent
+                value="pending"
+                className="text-white max-w-full mt-4"
+              >
+                {searchResults
+                  .filter((val) => !val.check)
+                  .map((val, index) => (
+                    <Todo
+                      key={index}
+                      i={index}
+                      val={val}
+                      data={data}
+                      setData={setData}
+                      setEdit={setEdit}
+                      setDeleteNotificationTitle={setDeleteNotificationTitle}
+                      setDeleteNotification={setDeleteNotification}
+                      setTaskDetails={setTaskDetails}
+                    />
+                  ))}
+              </TabsContent>
+              <TabsContent
+                value="completed"
+                className="text-white max-w-full mt-4"
+              >
+                {searchResults
+                  .filter((val) => val.check)
+                  .map((val, index) => (
+                    <Todo
+                      key={index}
+                      i={index}
+                      val={val}
+                      data={data}
+                      setData={setData}
+                      setEdit={setEdit}
+                      setDeleteNotificationTitle={setDeleteNotificationTitle}
+                      setDeleteNotification={setDeleteNotification}
+                      setTaskDetails={setTaskDetails}
+                    />
+                  ))}
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       ) : (
