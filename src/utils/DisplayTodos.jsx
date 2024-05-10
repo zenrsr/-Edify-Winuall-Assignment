@@ -5,6 +5,8 @@ import Todo from "./TaskList";
 import { CircularProgressbar } from "react-circular-progressbar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import "react-circular-progressbar/dist/styles.css";
+import { MdDragIndicator } from "react-icons/md";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const DisplayTodos = ({
   data,
@@ -81,6 +83,16 @@ const DisplayTodos = ({
       return `(${pending.length})`;
     }
     return "";
+  };
+
+  const handleOnDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(searchResults);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setSearchResults(items);
   };
 
   return (
@@ -164,59 +176,144 @@ const DisplayTodos = ({
               </div>
 
               <TabsContent value="all" className="text-white max-w-full mt-4">
-                {searchResults.map((val, index) => (
-                  <Todo
-                    key={index}
-                    i={index}
-                    val={val}
-                    data={data}
-                    setData={setData}
-                    setEdit={setEdit}
-                    setDeleteNotificationTitle={setDeleteNotificationTitle}
-                    setDeleteNotification={setDeleteNotification}
-                    setTaskDetails={setTaskDetails}
-                  />
-                ))}
+                <DragDropContext onDragEnd={handleOnDragEnd}>
+                  <Droppable droppableId="all">
+                    {(provided) => (
+                      <div {...provided.droppableProps} ref={provided.innerRef}>
+                        {searchResults.map((val, index) => (
+                          <Draggable
+                            key={index}
+                            draggableId={`${index}`}
+                            index={index}
+                          >
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                              >
+                                <div className="drag-handle cursor-grab">
+                                  <MdDragIndicator />
+                                </div>
+                                <Todo
+                                  i={index}
+                                  val={val}
+                                  data={data}
+                                  setData={setData}
+                                  setEdit={setEdit}
+                                  setDeleteNotificationTitle={
+                                    setDeleteNotificationTitle
+                                  }
+                                  setDeleteNotification={setDeleteNotification}
+                                  setTaskDetails={setTaskDetails}
+                                />
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
               </TabsContent>
               <TabsContent
                 value="pending"
                 className="text-white max-w-full mt-4"
               >
-                {searchResults
-                  .filter((val) => !val.check)
-                  .map((val, index) => (
-                    <Todo
-                      key={index}
-                      i={index}
-                      val={val}
-                      data={data}
-                      setData={setData}
-                      setEdit={setEdit}
-                      setDeleteNotificationTitle={setDeleteNotificationTitle}
-                      setDeleteNotification={setDeleteNotification}
-                      setTaskDetails={setTaskDetails}
-                    />
-                  ))}
+                <DragDropContext onDragEnd={handleOnDragEnd}>
+                  <Droppable droppableId="pending">
+                    {(provided) => (
+                      <div {...provided.droppableProps} ref={provided.innerRef}>
+                        {searchResults
+                          .filter((val) => !val.check)
+                          .map((val, index) => (
+                            <Draggable
+                              key={index}
+                              draggableId={`${index}`}
+                              index={index}
+                            >
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                >
+                                  <div className="drag-handle cursor-grab">
+                                    <MdDragIndicator />
+                                  </div>
+                                  <Todo
+                                    i={index}
+                                    val={val}
+                                    data={data}
+                                    setData={setData}
+                                    setEdit={setEdit}
+                                    setDeleteNotificationTitle={
+                                      setDeleteNotificationTitle
+                                    }
+                                    setDeleteNotification={
+                                      setDeleteNotification
+                                    }
+                                    setTaskDetails={setTaskDetails}
+                                  />
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
               </TabsContent>
               <TabsContent
                 value="completed"
                 className="text-white max-w-full mt-4"
               >
-                {searchResults
-                  .filter((val) => val.check)
-                  .map((val, index) => (
-                    <Todo
-                      key={index}
-                      i={index}
-                      val={val}
-                      data={data}
-                      setData={setData}
-                      setEdit={setEdit}
-                      setDeleteNotificationTitle={setDeleteNotificationTitle}
-                      setDeleteNotification={setDeleteNotification}
-                      setTaskDetails={setTaskDetails}
-                    />
-                  ))}
+                <DragDropContext onDragEnd={handleOnDragEnd}>
+                  <Droppable droppableId="completed">
+                    {(provided) => (
+                      <div {...provided.droppableProps} ref={provided.innerRef}>
+                        {searchResults
+                          .filter((val) => val.check)
+                          .map((val, index) => (
+                            <Draggable
+                              key={index}
+                              draggableId={`${index}`}
+                              index={index}
+                            >
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                >
+                                  <div className="drag-handle cursor-grab">
+                                    <MdDragIndicator />
+                                  </div>
+                                  <Todo
+                                    i={index}
+                                    val={val}
+                                    data={data}
+                                    setData={setData}
+                                    setEdit={setEdit}
+                                    setDeleteNotificationTitle={
+                                      setDeleteNotificationTitle
+                                    }
+                                    setDeleteNotification={
+                                      setDeleteNotification
+                                    }
+                                    setTaskDetails={setTaskDetails}
+                                  />
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
               </TabsContent>
             </Tabs>
           </div>
