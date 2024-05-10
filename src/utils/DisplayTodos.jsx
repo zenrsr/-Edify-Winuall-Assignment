@@ -222,9 +222,14 @@ const DisplayTodos = ({
           </div>
         </div>
       ) : (
-        <h1 className="bg-gradient-to-r from-rose-100 to-teal-100 bg-clip-text text-transparent p-4 h-auto w-full text-center text-7xl max-md:text-2xl max-sm:text-xl font-bold absolute bottom-[50%] left-[50%] -translate-x-[50%]">
-          Welcome to Organic Mind
-        </h1>
+        <>
+          <h1 className="bg-gradient-to-r from-green-200 via-green-300 to-blue-500 text-transparent bg-clip-text p-4 h-auto w-full text-center text-7xl max-md:text-3xl max-sm:text-3xl font-bold flex flex-col items-center justify-center absolute bottom-[50%] left-[50%] -translate-x-[50%] gap-2">
+            Welcome to Organic Mind <br></br>
+            <span className="bg-gradient-to-r from-indigo-300 to-purple-400 text-transparent bg-clip-text text-2xl max-sm:text-xs max-md:text-base">
+              Click on the Plus button to get started
+            </span>
+          </h1>
+        </>
       )}
     </>
   );

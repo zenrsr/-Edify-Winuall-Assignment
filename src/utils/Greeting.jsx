@@ -35,12 +35,12 @@ const Greeting = () => {
   return (
     <div className="py-7 px-10 max-sm:px-2 max-sm:py-3">
       <div className=" max-w-[1300px] max-lg:container flex justify-between items-center">
-        <h1 className=" text-white font-semibold flex items-center gap-1 text-4xl max-sm:text-lg">
+        <h1 className="bg-gradient-to-r from-indigo-200 via-red-200 to-yellow-100 text-transparent bg-clip-text py-2 font-semibold flex items-center gap-1 text-2xl md:text-3xl sm:text-4xl">
           {greeting}
         </h1>
 
         <div>
-          <p className=" text-white text-3xl font-semibold max-sm:text-sm">
+          <p className="bg-gradient-to-r from-blue-100 via-blue-300 to-blue-500 text-transparent bg-clip-text text-3xl font-semibold max-sm:text-sm">
             {today}
           </p>
         </div>
